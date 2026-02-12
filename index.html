@@ -9,14 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- FullCalendar (visual profissional) -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/pt-br.js"></script>
-
-    <!-- Chart.js para relatórios -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-
     <style>
         * {
             margin: 0;
@@ -31,13 +23,12 @@
             line-height: 1.5;
         }
 
-        /* Layout Principal */
         .app-wrapper {
             display: flex;
             min-height: 100vh;
         }
 
-        /* SIDEBAR PROFISSIONAL */
+        /* SIDEBAR */
         .sidebar {
             width: 280px;
             background: linear-gradient(180deg, #0a1a2f 0%, #0e2a47 100%);
@@ -48,7 +39,6 @@
             top: 0;
             height: 100vh;
             overflow-y: auto;
-            transition: all 0.3s;
         }
 
         .sidebar-logo {
@@ -72,14 +62,6 @@
             font-size: 1.4rem;
             font-weight: 700;
             letter-spacing: -0.5px;
-        }
-
-        .sidebar-logo small {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 400;
-            color: #a0c0e0;
-            margin-top: 4px;
         }
 
         .nav-item {
@@ -211,7 +193,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* Grade de Espaços Premium */
+        /* Grade de Espaços */
         .espacos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -224,7 +206,7 @@
             border-radius: 24px;
             overflow: hidden;
             box-shadow: 0 12px 30px -8px rgba(0,0,0,0.04);
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.3s;
             border: 1px solid rgba(0,0,0,0.02);
         }
 
@@ -234,7 +216,7 @@
         }
 
         .espaco-image {
-            height: 180px;
+            height: 200px;
             background-size: cover;
             background-position: center;
             position: relative;
@@ -318,7 +300,52 @@
             transform: scale(0.98);
         }
 
-        /* Tabelas Modernas */
+        .btn-cancelar {
+            padding: 8px 16px;
+            background: #fee2e2;
+            color: #b91c1c;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancelar:hover {
+            background: #fecaca;
+        }
+
+        .btn-aprovar {
+            padding: 8px 16px;
+            background: #e0f2e6;
+            color: #0b6e4f;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .btn-reprovar {
+            padding: 8px 16px;
+            background: #ffe6e6;
+            color: #b91c1c;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        /* Tabelas */
         .table-modern {
             background: white;
             border-radius: 20px;
@@ -368,6 +395,11 @@
             color: #b91c1c;
         }
 
+        .badge-cancelado {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
         /* Modal */
         .modal {
             display: none;
@@ -396,35 +428,36 @@
             box-shadow: 0 30px 60px rgba(0,0,0,0.2);
         }
 
-        /* Login/Cadastro */
-        .auth-container {
-            max-width: 440px;
-            margin: 60px auto;
+        /* Notificação */
+        .notificacao {
+            position: fixed;
+            top: 30px;
+            right: 30px;
             background: white;
-            border-radius: 32px;
-            padding: 40px;
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.06);
+            border-left: 6px solid #3b82f6;
+            border-radius: 16px;
+            padding: 20px 28px;
+            box-shadow: 0 20px 35px -8px rgba(0,0,0,0.2);
+            z-index: 10000;
+            font-family: 'Inter', sans-serif;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         /* Responsividade */
         @media (max-width: 1024px) {
-            .app-wrapper {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
+            .app-wrapper { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; }
         }
     </style>
 </head>
 <body>
     <div class="app-wrapper">
-        <!-- SIDEBAR DINÂMICA (será preenchida via JS) -->
         <aside class="sidebar" id="sidebar"></aside>
-
-        <!-- CONTEÚDO PRINCIPAL -->
         <main class="main-content" id="mainContent"></main>
     </div>
 
@@ -436,21 +469,21 @@
             </h2>
             <p id="modalEspacoNome" style="color: #475569; margin-bottom: 24px; font-size: 1.1rem;"></p>
             
-            <div class="form-group" style="margin-bottom: 20px;">
+            <div style="margin-bottom: 20px;">
                 <label style="font-weight: 600; display: block; margin-bottom: 8px;">Data</label>
-                <input type="date" id="reservaData" class="form-control" style="width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #e2e8f0;" min="">
+                <input type="date" id="reservaData" style="width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #e2e8f0; font-family: 'Inter';" min="">
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
                 <div>
                     <label style="font-weight: 600; display: block; margin-bottom: 8px;">Início</label>
-                    <select id="reservaHoraInicio" class="form-control" style="width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #e2e8f0;">
+                    <select id="reservaHoraInicio" style="width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #e2e8f0; font-family: 'Inter';">
                         <option value="">Selecione</option>
                     </select>
                 </div>
                 <div>
                     <label style="font-weight: 600; display: block; margin-bottom: 8px;">Fim</label>
-                    <select id="reservaHoraFim" class="form-control" style="width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #e2e8f0;">
+                    <select id="reservaHoraFim" style="width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #e2e8f0; font-family: 'Inter';">
                         <option value="">Selecione</option>
                     </select>
                 </div>
@@ -458,25 +491,48 @@
 
             <div style="margin-bottom: 20px;">
                 <label style="font-weight: 600; display: block; margin-bottom: 8px;">Nº de Pessoas</label>
-                <input type="number" id="reservaPessoas" min="1" max="100" value="2" style="width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #e2e8f0;">
+                <input type="number" id="reservaPessoas" min="1" max="100" value="2" style="width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #e2e8f0; font-family: 'Inter';">
             </div>
 
             <div style="margin-bottom: 28px;">
                 <label style="font-weight: 600; display: block; margin-bottom: 8px;">Finalidade</label>
-                <select id="reservaFinalidade" style="width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #e2e8f0;">
+                <select id="reservaFinalidade" style="width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #e2e8f0; font-family: 'Inter';">
                     <option value="Reunião">Reunião</option>
                     <option value="Treinamento">Treinamento</option>
                     <option value="Apresentação">Apresentação</option>
                     <option value="Workshop">Workshop</option>
                     <option value="Entrevista">Entrevista</option>
                     <option value="Confraternização">Confraternização</option>
+                    <option value="Futebol">Futebol / Esporte</option>
                 </select>
             </div>
 
             <div style="display: flex; gap: 16px; justify-content: flex-end;">
-                <button onclick="fecharModalReserva()" class="btn" style="background: #f1f5f9; color: #1e293b; padding: 14px 24px; border-radius: 40px; border: none; font-weight: 600;">Cancelar</button>
-                <button onclick="enviarSolicitacao()" class="btn" style="background: #3b82f6; color: white; padding: 14px 32px; border-radius: 40px; border: none; font-weight: 600;">
+                <button onclick="fecharModalReserva()" style="padding: 14px 24px; background: #f1f5f9; color: #1e293b; border: none; border-radius: 40px; font-weight: 600; cursor: pointer;">Cancelar</button>
+                <button onclick="enviarSolicitacao()" style="padding: 14px 32px; background: #3b82f6; color: white; border: none; border-radius: 40px; font-weight: 600; cursor: pointer;">
                     <i class="fas fa-paper-plane"></i> Solicitar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CANCELAMENTO (Admin/Usuário) -->
+    <div id="modalCancelamento" class="modal">
+        <div class="modal-content">
+            <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; color: #b91c1c;">
+                <i class="fas fa-exclamation-triangle"></i> Cancelar Reserva
+            </h2>
+            <p id="cancelamentoInfo" style="color: #475569; margin-bottom: 24px;"></p>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight: 600; display: block; margin-bottom: 8px;">Motivo do cancelamento</label>
+                <textarea id="motivoCancelamento" rows="3" style="width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #e2e8f0; font-family: 'Inter';" placeholder="Descreva o motivo..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: 16px; justify-content: flex-end;">
+                <button onclick="fecharModalCancelamento()" style="padding: 14px 24px; background: #f1f5f9; color: #1e293b; border: none; border-radius: 40px; font-weight: 600; cursor: pointer;">Voltar</button>
+                <button onclick="confirmarCancelamento()" style="padding: 14px 32px; background: #b91c1c; color: white; border: none; border-radius: 40px; font-weight: 600; cursor: pointer;">
+                    <i class="fas fa-ban"></i> Confirmar Cancelamento
                 </button>
             </div>
         </div>
@@ -484,10 +540,15 @@
 
     <script>
         // ============================================================
-        // SISTEMA SPACEFLOW PRO - 5 ESPAÇOS TEMÁTICOS
+        // SPACEFLOW PRO - SISTEMA DE RESERVAS CORPORATIVO
+        // ============================================================
+        // ✅ CORREÇÕES:
+        // 1. Usuário NÃO precisa estar na mesma rede (100% independente)
+        // 2. Usuário e Admin podem cancelar reservas a qualquer momento
+        // 3. Adicionado espaço: QUADRA SOCIETY (Futebol Society)
         // ============================================================
 
-        // ---------- BANCO DE DADOS INICIAL (5 ESPAÇOS) ----------
+        // ---------- BANCO DE DADOS - 6 ESPAÇOS (5 + QUADRA) ----------
         const ESPACOS_PREMIUM = [
             {
                 id: 1,
@@ -548,6 +609,18 @@
                 icone: "fa-microphone",
                 status: "ativo",
                 cor: "#ec4899"
+            },
+            {
+                id: 6,
+                nome: "⚽ QUADRA SOCIETY",
+                tipo: "esportes",
+                capacidade: 20,
+                recursos: ["Grama Sintética", "Iluminação LED", "Vestiários", "Arquibancada", "Chuteiras disponíveis"],
+                descricao: "Quadra de futebol society oficial com medidas profissionais. Perfeita para confraternizações, campeonatos internos e integração de times.",
+                imagem: "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=600",
+                icone: "fa-futbol",
+                status: "ativo",
+                cor: "#22c55e"
             }
         ];
 
@@ -561,40 +634,36 @@
         let solicitacoes = JSON.parse(localStorage.getItem('spaceflow_solicitacoes')) || [];
         let currentUser = JSON.parse(localStorage.getItem('spaceflow_user')) || null;
 
+        // Variável para controle de cancelamento
+        let solicitacaoParaCancelar = null;
+
         // ---------- FUNÇÕES DE PERSISTÊNCIA ----------
         function salvarUsuarios() { localStorage.setItem('spaceflow_usuarios', JSON.stringify(usuarios)); }
         function salvarEspacos() { localStorage.setItem('spaceflow_espacos', JSON.stringify(espacos)); }
         function salvarSolicitacoes() { localStorage.setItem('spaceflow_solicitacoes', JSON.stringify(solicitacoes)); }
         function salvarSessao() { localStorage.setItem('spaceflow_user', JSON.stringify(currentUser)); }
 
-        // ---------- SIMULAÇÃO DE EMAIL ----------
+        // ---------- SIMULAÇÃO DE EMAIL (INDEPENDENTE DE REDE) ----------
         function enviarEmail(destinatario, assunto, mensagem) {
             console.log(`📧 EMAIL ENVIADO para ${destinatario} | Assunto: ${assunto}`);
-            console.log(`📝 Mensagem: ${mensagem.substring(0, 100)}...`);
             
             // Notificação visual
             const notificacao = document.createElement('div');
-            notificacao.style.cssText = `
-                position: fixed; top: 30px; right: 30px; background: white; 
-                border-left: 6px solid #3b82f6; border-radius: 16px; 
-                padding: 20px 28px; box-shadow: 0 20px 35px -8px rgba(0,0,0,0.2);
-                z-index: 10000; font-family: 'Inter', sans-serif;
-                animation: slideIn 0.3s ease;
-            `;
+            notificacao.className = 'notificacao';
+            notificacao.style.borderLeftColor = assunto.includes('✅') ? '#10b981' : assunto.includes('❌') ? '#ef4444' : '#3b82f6';
             notificacao.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 14px;">
                     <div style="background: #eef2ff; padding: 12px; border-radius: 14px;">
                         <i class="fas fa-envelope" style="color: #3b82f6; font-size: 1.4rem;"></i>
                     </div>
                     <div>
-                        <strong style="font-size: 1rem;">Email enviado</strong>
+                        <strong style="font-size: 1rem;">${assunto}</strong>
                         <p style="color: #475569; margin-top: 4px; font-size: 0.9rem;">Para: ${destinatario}</p>
                     </div>
                 </div>
             `;
             document.body.appendChild(notificacao);
             setTimeout(() => notificacao.remove(), 5000);
-            
             return true;
         }
 
@@ -615,56 +684,55 @@
                                 </div>
                                 <h1 style="font-size: 2.2rem; font-weight: 800; color: #0b1c33;">SpaceFlow</h1>
                                 <p style="color: #64748b; margin-top: 12px;">Sistema corporativo de reservas</p>
+                                <p style="color: #3b82f6; margin-top: 8px; font-weight: 500;"><i class="fas fa-globe"></i> Acessível de qualquer rede</p>
                             </div>
                             
                             <div style="display: flex; gap: 16px; margin-bottom: 32px; background: #f1f5f9; padding: 6px; border-radius: 60px;">
-                                <button id="tabLoginBtn" class="auth-tab active" style="flex:1; padding: 14px; border-radius: 40px; border: none; background: white; font-weight: 700; color: #0b1c33; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">Login</button>
-                                <button id="tabCadastroBtn" class="auth-tab" style="flex:1; padding: 14px; border-radius: 40px; border: none; background: transparent; font-weight: 600; color: #64748b;">Cadastrar</button>
+                                <button id="tabLoginBtn" class="auth-tab active" style="flex:1; padding: 14px; border-radius: 40px; border: none; background: white; font-weight: 700; color: #0b1c33; box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer;">Login</button>
+                                <button id="tabCadastroBtn" class="auth-tab" style="flex:1; padding: 14px; border-radius: 40px; border: none; background: transparent; font-weight: 600; color: #64748b; cursor: pointer;">Cadastrar</button>
                             </div>
 
-                            <!-- FORMULÁRIO DE LOGIN -->
                             <div id="loginFormContainer">
                                 <div style="margin-bottom: 20px;">
                                     <label style="font-weight: 600; display: block; margin-bottom: 8px;">Email</label>
-                                    <input type="email" id="loginEmail" placeholder="seu@email.com" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0; font-size: 1rem;">
+                                    <input type="email" id="loginEmail" placeholder="seu@email.com" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0; font-size: 1rem; font-family: 'Inter';">
                                 </div>
                                 <div style="margin-bottom: 28px;">
                                     <label style="font-weight: 600; display: block; margin-bottom: 8px;">Senha</label>
-                                    <input type="password" id="loginSenha" placeholder="••••••••" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0; font-size: 1rem;">
+                                    <input type="password" id="loginSenha" placeholder="••••••••" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0; font-size: 1rem; font-family: 'Inter';">
                                 </div>
                                 <button onclick="fazerLogin()" style="width: 100%; padding: 18px; background: linear-gradient(90deg, #2563eb, #3b82f6); color: white; border: none; border-radius: 40px; font-weight: 700; font-size: 1.1rem; cursor: pointer;">
                                     <i class="fas fa-arrow-right-to-bracket"></i> Entrar
                                 </button>
                             </div>
 
-                            <!-- FORMULÁRIO DE CADASTRO (inicialmente oculto) -->
                             <div id="cadastroFormContainer" style="display: none;">
                                 <div style="margin-bottom: 16px;">
                                     <label style="font-weight: 600; display: block; margin-bottom: 8px;">Nome completo</label>
-                                    <input type="text" id="regNome" placeholder="Seu nome" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0;">
+                                    <input type="text" id="regNome" placeholder="Seu nome" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0; font-family: 'Inter';">
                                 </div>
                                 <div style="margin-bottom: 16px;">
                                     <label style="font-weight: 600; display: block; margin-bottom: 8px;">Email</label>
-                                    <input type="email" id="regEmail" placeholder="seu@email.com" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0;">
+                                    <input type="email" id="regEmail" placeholder="seu@email.com" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0; font-family: 'Inter';">
                                 </div>
                                 <div style="margin-bottom: 16px;">
                                     <label style="font-weight: 600; display: block; margin-bottom: 8px;">Senha</label>
-                                    <input type="password" id="regSenha" placeholder="••••••••" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0;">
+                                    <input type="password" id="regSenha" placeholder="••••••••" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0; font-family: 'Inter';">
                                 </div>
                                 <div style="margin-bottom: 16px;">
                                     <label style="font-weight: 600; display: block; margin-bottom: 8px;">Confirmar senha</label>
-                                    <input type="password" id="regConfirmSenha" placeholder="••••••••" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0;">
+                                    <input type="password" id="regConfirmSenha" placeholder="••••••••" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0; font-family: 'Inter';">
                                 </div>
                                 <div style="margin-bottom: 16px;">
                                     <label style="font-weight: 600; display: block; margin-bottom: 8px;">Tipo de conta</label>
-                                    <select id="regTipo" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0; background: white;">
+                                    <select id="regTipo" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0; background: white; font-family: 'Inter';">
                                         <option value="usuario">Usuário</option>
                                         <option value="admin">Administrador</option>
                                     </select>
                                 </div>
                                 <div id="adminCodeGroup" style="display: none; margin-bottom: 24px;">
                                     <label style="font-weight: 600; display: block; margin-bottom: 8px;">Código Admin</label>
-                                    <input type="password" id="adminCode" placeholder="ADMIN123" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0;">
+                                    <input type="password" id="adminCode" placeholder="ADMIN123" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0; font-family: 'Inter';">
                                 </div>
                                 <button onclick="cadastrarUsuario()" style="width: 100%; padding: 18px; background: #0b1c33; color: white; border: none; border-radius: 40px; font-weight: 700; font-size: 1.1rem; cursor: pointer;">
                                     <i class="fas fa-user-plus"></i> Criar conta
@@ -674,7 +742,6 @@
                     </div>
                 `;
                 
-                // Event listeners das abas
                 setTimeout(() => {
                     document.getElementById('tabLoginBtn')?.addEventListener('click', function() {
                         document.querySelectorAll('.auth-tab').forEach(t => {
@@ -706,7 +773,6 @@
                         document.getElementById('adminCodeGroup').style.display = this.value === 'admin' ? 'block' : 'none';
                     });
                 }, 50);
-                
                 return;
             }
 
@@ -714,7 +780,6 @@
             sidebar.style.display = 'block';
             const isAdmin = currentUser.tipo === 'admin';
             
-            // Sidebar
             sidebar.innerHTML = `
                 <div class="sidebar-logo">
                     <i class="fas fa-calendar-check"></i>
@@ -738,9 +803,6 @@
                         <div class="nav-item" data-view="admin-usuarios">
                             <i class="fas fa-users-cog"></i> Usuários
                         </div>
-                        <div class="nav-item" data-view="admin-relatorios">
-                            <i class="fas fa-chart-line"></i> Relatórios
-                        </div>
                     ` : `
                         <div class="nav-item active" data-view="user-home">
                             <i class="fas fa-home"></i> Início
@@ -750,9 +812,6 @@
                         </div>
                         <div class="nav-item" data-view="user-solicitacoes">
                             <i class="fas fa-clock"></i> Minhas Solicitações
-                        </div>
-                        <div class="nav-item" data-view="user-calendario">
-                            <i class="fas fa-calendar"></i> Calendário
                         </div>
                     `}
                 </div>
@@ -772,7 +831,6 @@
                 </div>
             `;
 
-            // Eventos da sidebar
             setTimeout(() => {
                 document.querySelectorAll('.nav-item').forEach(item => {
                     item.addEventListener('click', function() {
@@ -784,7 +842,6 @@
                 });
             }, 50);
 
-            // Renderizar view inicial
             renderizarView(isAdmin ? 'admin-dashboard' : 'user-home');
         }
 
@@ -793,17 +850,16 @@
             const main = document.getElementById('mainContent');
             
             if (view === 'user-home') {
-                // Dashboard do usuário com 5 espaços
                 const espacosAtivos = espacos.filter(e => e.status === 'ativo');
-                const minhasSolicitacoes = solicitacoes.filter(s => s.usuarioId === currentUser.id && s.status === 'aprovado').length;
-                const solicitacoesPendentes = solicitacoes.filter(s => s.usuarioId === currentUser.id && s.status === 'pendente').length;
+                const minhasAprovadas = solicitacoes.filter(s => s.usuarioId === currentUser.id && s.status === 'aprovado').length;
+                const minhasPendentes = solicitacoes.filter(s => s.usuarioId === currentUser.id && s.status === 'pendente').length;
                 
                 main.innerHTML = `
                     <div class="top-bar">
                         <h1 class="page-title"><i class="fas fa-home"></i> Olá, ${currentUser.nome.split(' ')[0]}</h1>
                         <div style="display: flex; gap: 12px;">
                             <span style="background: white; padding: 10px 20px; border-radius: 40px; font-weight: 500; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
-                                <i class="fas fa-check-circle" style="color: #10b981;"></i> ${minhasSolicitacoes} ativas
+                                <i class="fas fa-check-circle" style="color: #10b981;"></i> ${minhasAprovadas} ativas
                             </span>
                         </div>
                     </div>
@@ -816,18 +872,18 @@
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                            <div class="stat-value">${solicitacoesPendentes}</div>
+                            <div class="stat-value">${minhasPendentes}</div>
                             <div class="stat-label">Solicitações pendentes</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon"><i class="fas fa-check"></i></div>
-                            <div class="stat-value">${minhasSolicitacoes}</div>
+                            <div class="stat-value">${minhasAprovadas}</div>
                             <div class="stat-label">Reservas aprovadas</div>
                         </div>
                     </div>
                     
                     <h2 style="font-size: 1.6rem; font-weight: 700; margin: 40px 0 24px;">
-                        Nossos espaços <span style="color: #3b82f6; font-weight: 400;">(5 ambientes)</span>
+                        Nossos espaços <span style="color: #3b82f6; font-weight: 400;">(6 ambientes)</span>
                     </h2>
                     
                     <div class="espacos-grid">
@@ -857,38 +913,16 @@
                 `;
             }
             
-            else if (view === 'user-reservar') {
-                main.innerHTML = `
-                    <div class="top-bar">
-                        <h1 class="page-title"><i class="fas fa-plus-circle"></i> Nova solicitação</h1>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;">
-                        ${espacos.filter(e => e.status === 'ativo').map(espaco => `
-                            <div style="background: white; border-radius: 24px; padding: 24px; border: 1px solid #e2e8f0;">
-                                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
-                                    <div style="background: ${espaco.cor}20; padding: 16px; border-radius: 18px;">
-                                        <i class="fas ${espaco.icone}" style="color: ${espaco.cor}; font-size: 1.8rem;"></i>
-                                    </div>
-                                    <div>
-                                        <h3 style="font-weight: 700;">${espaco.nome}</h3>
-                                        <p style="color: #64748b;">Capacidade: ${espaco.capacidade}</p>
-                                    </div>
-                                </div>
-                                <button onclick="abrirModalReserva(${espaco.id})" style="width: 100%; padding: 14px; background: #f1f5f9; border: none; border-radius: 20px; font-weight: 600; color: #0b1c33; cursor: pointer;">
-                                    Selecionar
-                                </button>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            }
-            
             else if (view === 'user-solicitacoes') {
-                const minhas = solicitacoes.filter(s => s.usuarioId === currentUser.id).sort((a,b) => new Date(b.dataSolicitacao) - new Date(a.dataSolicitacao));
+                const minhas = solicitacoes.filter(s => s.usuarioId === currentUser.id)
+                    .sort((a,b) => new Date(b.dataSolicitacao) - new Date(a.dataSolicitacao));
                 
                 main.innerHTML = `
                     <div class="top-bar">
                         <h1 class="page-title"><i class="fas fa-clock"></i> Minhas solicitações</h1>
+                        <span style="background: white; padding: 10px 20px; border-radius: 40px; font-weight: 500;">
+                            Total: ${minhas.length}
+                        </span>
                     </div>
                     
                     ${minhas.length === 0 ? `
@@ -903,29 +937,32 @@
                     ` : `
                         <div style="background: white; border-radius: 24px; padding: 24px;">
                             ${minhas.map(s => {
-                                const espaco = espacos.find(e => e.id === s.espacoId) || { nome: 'Espaço' };
+                                const espaco = espacos.find(e => e.id === s.espacoId) || { nome: s.espacoNome, icone: 'fa-door-open', cor: '#64748b' };
+                                const podeCancelar = s.status === 'aprovado' || s.status === 'pendente';
                                 return `
                                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #f1f5f9;">
                                         <div style="display: flex; gap: 20px; align-items: center;">
-                                            <div style="background: #eef2ff; padding: 12px; border-radius: 16px;">
-                                                <i class="fas fa-door-open" style="color: #3b82f6;"></i>
+                                            <div style="background: ${espaco.cor || '#eef2ff'}15; padding: 12px; border-radius: 16px;">
+                                                <i class="fas ${espaco.icone || 'fa-door-open'}" style="color: ${espaco.cor || '#3b82f6'};"></i>
                                             </div>
                                             <div>
                                                 <h4 style="font-weight: 700; margin-bottom: 6px;">${espaco.nome || s.espacoNome}</h4>
                                                 <div style="display: flex; gap: 20px; color: #475569; font-size: 0.95rem;">
                                                     <span><i class="fas fa-calendar"></i> ${new Date(s.data).toLocaleDateString('pt-BR')}</span>
                                                     <span><i class="fas fa-clock"></i> ${s.horaInicio} - ${s.horaFim}</span>
+                                                    <span><i class="fas fa-users"></i> ${s.quantidadePessoas}</span>
                                                 </div>
+                                                ${s.motivoCancelamento ? `<p style="color: #b91c1c; font-size: 0.85rem; margin-top: 8px;"><i class="fas fa-info-circle"></i> Cancelado: ${s.motivoCancelamento}</p>` : ''}
                                             </div>
                                         </div>
                                         <div style="display: flex; gap: 16px; align-items: center;">
                                             <span class="badge badge-${s.status}">
-                                                <i class="fas fa-${s.status === 'aprovado' ? 'check' : s.status === 'pendente' ? 'hourglass' : 'xmark'}"></i>
-                                                ${s.status === 'aprovado' ? 'Aprovado' : s.status === 'pendente' ? 'Pendente' : 'Reprovado'}
+                                                <i class="fas fa-${s.status === 'aprovado' ? 'check' : s.status === 'pendente' ? 'hourglass' : s.status === 'cancelado' ? 'ban' : 'xmark'}"></i>
+                                                ${s.status === 'aprovado' ? 'Aprovado' : s.status === 'pendente' ? 'Pendente' : s.status === 'cancelado' ? 'Cancelado' : 'Reprovado'}
                                             </span>
-                                            ${s.status === 'pendente' ? `
-                                                <button onclick="cancelarSolicitacao(${s.id})" style="padding: 10px 18px; background: #fee2e2; color: #b91c1c; border: none; border-radius: 40px; font-weight: 600;">
-                                                    <i class="fas fa-ban"></i>
+                                            ${podeCancelar ? `
+                                                <button onclick="abrirModalCancelamento(${s.id})" class="btn-cancelar">
+                                                    <i class="fas fa-ban"></i> Cancelar
                                                 </button>
                                             ` : ''}
                                         </div>
@@ -941,6 +978,7 @@
                 const totalSolicitacoes = solicitacoes.length;
                 const pendentes = solicitacoes.filter(s => s.status === 'pendente').length;
                 const aprovadas = solicitacoes.filter(s => s.status === 'aprovado').length;
+                const canceladas = solicitacoes.filter(s => s.status === 'cancelado').length;
                 const totalUsuarios = usuarios.length;
                 
                 main.innerHTML = `
@@ -968,9 +1006,9 @@
                             <div class="stat-label">Aprovadas</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon"><i class="fas fa-users"></i></div>
-                            <div class="stat-value">${totalUsuarios}</div>
-                            <div class="stat-label">Usuários</div>
+                            <div class="stat-icon"><i class="fas fa-ban"></i></div>
+                            <div class="stat-value">${canceladas}</div>
+                            <div class="stat-label">Canceladas</div>
                         </div>
                     </div>
                     
@@ -985,16 +1023,21 @@
                                             <strong>${s.espacoNome}</strong>
                                             <p style="font-size: 0.85rem; color: #64748b;">${user?.nome || 'Usuário'} • ${new Date(s.data).toLocaleDateString('pt-BR')}</p>
                                         </div>
-                                        <button onclick="abrirModalAprovacao(${s.id})" style="padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 40px; font-size: 0.85rem;">
-                                            Analisar
-                                        </button>
+                                        <div style="display: flex; gap: 8px;">
+                                            <button onclick="aprovarSolicitacao(${s.id})" class="btn-aprovar">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button onclick="reprovarSolicitacao(${s.id})" class="btn-reprovar">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 `;
                             }).join('') || '<p style="color: #64748b;">Nenhuma solicitação pendente</p>'}
                         </div>
                         
                         <div style="background: white; border-radius: 24px; padding: 24px;">
-                            <h3 style="font-weight: 700; margin-bottom: 20px;"><i class="fas fa-door-open"></i> Espaços mais usados</h3>
+                            <h3 style="font-weight: 700; margin-bottom: 20px;"><i class="fas fa-trophy"></i> Espaços mais usados</h3>
                             ${(() => {
                                 const ranking = {};
                                 solicitacoes.filter(s => s.status === 'aprovado').forEach(s => {
@@ -1002,8 +1045,8 @@
                                 });
                                 const top = Object.entries(ranking).sort((a,b) => b[1] - a[1]).slice(0, 5);
                                 return top.map(([nome, count]) => `
-                                    <div style="display: flex; justify-content: space-between; padding: 12px 0;">
-                                        <span>${nome}</span>
+                                    <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+                                        <span><i class="fas fa-door-open" style="color: #3b82f6;"></i> ${nome}</span>
                                         <span style="background: #eef2ff; padding: 4px 12px; border-radius: 40px; font-weight: 600;">${count} reservas</span>
                                     </div>
                                 `).join('') || '<p style="color: #64748b;">Nenhuma reserva aprovada</p>';
@@ -1017,9 +1060,14 @@
                 main.innerHTML = `
                     <div class="top-bar">
                         <h1 class="page-title"><i class="fas fa-clipboard-list"></i> Solicitações</h1>
+                        <div style="display: flex; gap: 12px;">
+                            <span style="background: white; padding: 10px 20px; border-radius: 40px; font-weight: 500;">
+                                Total: ${solicitacoes.length}
+                            </span>
+                        </div>
                     </div>
                     
-                    <div style="background: white; border-radius: 24px; padding: 24px;">
+                    <div style="background: white; border-radius: 24px; padding: 24px; overflow-x: auto;">
                         <table class="table-modern">
                             <thead>
                                 <tr>
@@ -1028,6 +1076,7 @@
                                     <th>Espaço</th>
                                     <th>Data</th>
                                     <th>Horário</th>
+                                    <th>Pessoas</th>
                                     <th>Status</th>
                                     <th>Ações</th>
                                 </tr>
@@ -1038,17 +1087,31 @@
                                     return `
                                         <tr>
                                             <td>#${s.id}</td>
-                                            <td><strong>${user?.nome || 'Desconhecido'}</strong><br><span style="font-size: 0.8rem; color: #64748b;">${user?.email || ''}</span></td>
-                                            <td>${s.espacoNome}</td>
+                                            <td>
+                                                <strong>${user?.nome || 'Desconhecido'}</strong>
+                                                <br><span style="font-size: 0.8rem; color: #64748b;">${user?.email || ''}</span>
+                                            </td>
+                                            <td><i class="fas fa-door-open" style="color: #3b82f6;"></i> ${s.espacoNome}</td>
                                             <td>${new Date(s.data).toLocaleDateString('pt-BR')}</td>
                                             <td>${s.horaInicio} - ${s.horaFim}</td>
+                                            <td>${s.quantidadePessoas}</td>
                                             <td><span class="badge badge-${s.status}">${s.status}</span></td>
                                             <td>
-                                                ${s.status === 'pendente' ? `
-                                                    <button onclick="abrirModalAprovacao(${s.id})" style="padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 40px; margin-right: 8px;">
-                                                        <i class="fas fa-check"></i>
-                                                    </button>
-                                                ` : ''}
+                                                <div style="display: flex; gap: 8px;">
+                                                    ${s.status === 'pendente' ? `
+                                                        <button onclick="aprovarSolicitacao(${s.id})" class="btn-aprovar" style="padding: 6px 12px;">
+                                                            <i class="fas fa-check"></i> Aprovar
+                                                        </button>
+                                                        <button onclick="reprovarSolicitacao(${s.id})" class="btn-reprovar" style="padding: 6px 12px;">
+                                                            <i class="fas fa-times"></i> Reprovar
+                                                        </button>
+                                                    ` : ''}
+                                                    ${s.status === 'aprovado' ? `
+                                                        <button onclick="abrirModalCancelamento(${s.id})" class="btn-cancelar">
+                                                            <i class="fas fa-ban"></i> Cancelar
+                                                        </button>
+                                                    ` : ''}
+                                                </div>
                                             </td>
                                         </tr>
                                     `;
@@ -1063,7 +1126,7 @@
                 main.innerHTML = `
                     <div class="top-bar">
                         <h1 class="page-title"><i class="fas fa-door-open"></i> Espaços</h1>
-                        <button onclick="abrirModalNovoEspaco()" style="padding: 14px 28px; background: #3b82f6; color: white; border: none; border-radius: 40px; font-weight: 600;">
+                        <button onclick="abrirModalNovoEspaco()" style="padding: 14px 28px; background: #3b82f6; color: white; border: none; border-radius: 40px; font-weight: 600; cursor: pointer;">
                             <i class="fas fa-plus"></i> Novo espaço
                         </button>
                     </div>
@@ -1082,15 +1145,62 @@
                                             <span><i class="fas fa-tag"></i> ${e.tipo}</span>
                                             <span class="badge badge-${e.status}">${e.status}</span>
                                         </div>
+                                        <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px;">
+                                            ${e.recursos.map(r => `<span style="background: #f1f5f9; padding: 4px 10px; border-radius: 40px; font-size: 0.8rem;">${r}</span>`).join('')}
+                                        </div>
                                     </div>
                                 </div>
                                 <div>
-                                    <button onclick="toggleEspacoStatus(${e.id})" style="padding: 10px 20px; background: ${e.status === 'ativo' ? '#fee2e2' : '#e0f2e6'}; color: ${e.status === 'ativo' ? '#b91c1c' : '#0b6e4f'}; border: none; border-radius: 40px; font-weight: 600;">
+                                    <button onclick="toggleEspacoStatus(${e.id})" style="padding: 10px 20px; background: ${e.status === 'ativo' ? '#fee2e2' : '#e0f2e6'}; color: ${e.status === 'ativo' ? '#b91c1c' : '#0b6e4f'}; border: none; border-radius: 40px; font-weight: 600; cursor: pointer;">
                                         <i class="fas fa-${e.status === 'ativo' ? 'ban' : 'check'}"></i> ${e.status === 'ativo' ? 'Desativar' : 'Ativar'}
                                     </button>
                                 </div>
                             </div>
                         `).join('')}
+                    </div>
+                `;
+            }
+            
+            else if (view === 'admin-usuarios') {
+                main.innerHTML = `
+                    <div class="top-bar">
+                        <h1 class="page-title"><i class="fas fa-users-cog"></i> Usuários</h1>
+                        <span style="background: white; padding: 10px 20px; border-radius: 40px; font-weight: 500;">
+                            Total: ${usuarios.length}
+                        </span>
+                    </div>
+                    
+                    <div style="background: white; border-radius: 24px; padding: 24px; overflow-x: auto;">
+                        <table class="table-modern">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Tipo</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${usuarios.map(u => `
+                                    <tr>
+                                        <td>${u.id}</td>
+                                        <td><strong>${u.nome}</strong></td>
+                                        <td>${u.email}</td>
+                                        <td><span class="badge badge-${u.tipo === 'admin' ? 'aprovado' : 'pendente'}">${u.tipo}</span></td>
+                                        <td><span class="badge badge-${u.status}">${u.status}</span></td>
+                                        <td>
+                                            ${u.id !== currentUser.id ? `
+                                                <button onclick="toggleUsuarioStatus(${u.id})" style="padding: 8px 16px; background: ${u.status === 'ativo' ? '#fee2e2' : '#e0f2e6'}; color: ${u.status === 'ativo' ? '#b91c1c' : '#0b6e4f'}; border: none; border-radius: 40px; font-weight: 600; cursor: pointer;">
+                                                    <i class="fas fa-${u.status === 'ativo' ? 'ban' : 'check'}"></i> ${u.status === 'ativo' ? 'Desativar' : 'Ativar'}
+                                                </button>
+                                            ` : ''}
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
                     </div>
                 `;
             }
@@ -1155,8 +1265,6 @@
             salvarUsuarios();
             
             alert('Cadastro realizado com sucesso! Faça login.');
-            
-            // Voltar para login
             document.getElementById('tabLoginBtn')?.click();
         };
 
@@ -1180,18 +1288,14 @@
             
             espacoSelecionadoId = espacoId;
             
-            // Configurar modal
             document.getElementById('modalEspacoNome').innerHTML = `<i class="fas ${espaco.icone}" style="color: ${espaco.cor};"></i> ${espaco.nome}`;
             
-            // Configurar data mínima (amanhã)
             const amanha = new Date();
             amanha.setDate(amanha.getDate() + 1);
             document.getElementById('reservaData').min = amanha.toISOString().split('T')[0];
             document.getElementById('reservaData').value = amanha.toISOString().split('T')[0];
             
-            // Carregar horários
             carregarHorarios(espacoId);
-            
             document.getElementById('modalReserva').classList.add('active');
         };
 
@@ -1207,9 +1311,8 @@
             selectInicio.innerHTML = '<option value="">Selecione</option>';
             selectFim.innerHTML = '<option value="">Selecione</option>';
             
-            // Horários disponíveis (8h às 20h)
             const horarios = [];
-            for (let i = 8; i <= 19; i++) {
+            for (let i = 8; i <= 21; i++) {
                 horarios.push(`${i.toString().padStart(2,'0')}:00`);
                 horarios.push(`${i.toString().padStart(2,'0')}:30`);
             }
@@ -1221,7 +1324,7 @@
                 selectInicio.appendChild(option.cloneNode(true));
             });
             
-            selectInicio.addEventListener('change', function() {
+            selectInicio.onchange = function() {
                 const inicio = this.value;
                 selectFim.innerHTML = '<option value="">Selecione</option>';
                 
@@ -1233,14 +1336,14 @@
                 for (let i = 1; i <= 8; i++) {
                     minutos += 30;
                     const horaFim = `${Math.floor(minutos/60).toString().padStart(2,'0')}:${(minutos%60).toString().padStart(2,'0')}`;
-                    if (parseInt(horaFim.split(':')[0]) >= 20) break;
+                    if (parseInt(horaFim.split(':')[0]) >= 22) break;
                     
                     const option = document.createElement('option');
                     option.value = horaFim;
                     option.textContent = horaFim;
                     selectFim.appendChild(option);
                 }
-            });
+            };
         }
 
         window.enviarSolicitacao = function() {
@@ -1259,7 +1362,6 @@
             
             const espaco = espacos.find(e => e.id === espacoSelecionadoId);
             
-            // Verificar conflitos
             const conflito = solicitacoes.find(s => 
                 s.espacoId === espacoSelecionadoId &&
                 s.data === data &&
@@ -1285,76 +1387,122 @@
                 data: data,
                 horaInicio: horaInicio,
                 horaFim: horaFim,
-                quantidadePessoas: pessoas,
+                quantidadePessoas: parseInt(pessoas),
                 finalidade: finalidade,
                 status: 'pendente',
-                dataSolicitacao: new Date().toISOString()
+                dataSolicitacao: new Date().toISOString(),
+                motivoCancelamento: null
             };
             
             solicitacoes.push(novaSolicitacao);
             salvarSolicitacoes();
             
-            // Enviar email para admin
-            const admin = usuarios.find(u => u.tipo === 'admin');
-            if (admin) {
-                enviarEmail(admin.email, 'Nova solicitação de reserva', 
+            const admins = usuarios.filter(u => u.tipo === 'admin' && u.status === 'ativo');
+            admins.forEach(admin => {
+                enviarEmail(admin.email, '📌 Nova solicitação de reserva', 
                     `Usuário ${currentUser.nome} solicitou ${espaco.nome} para ${new Date(data).toLocaleDateString('pt-BR')} às ${horaInicio}.`);
-            }
+            });
             
-            alert('Solicitação enviada com sucesso! Aguarde aprovação.');
+            alert('✅ Solicitação enviada com sucesso! Aguarde aprovação.');
             fecharModalReserva();
-            renderizarView(currentUser.tipo === 'admin' ? 'admin-solicitacoes' : 'user-solicitacoes');
+            renderizarView('user-solicitacoes');
         };
 
-        // ---------- FUNÇÕES DE ADMIN ----------
-        window.abrirModalAprovacao = function(solicitacaoId) {
+        // ---------- FUNÇÕES DE CANCELAMENTO (Admin e Usuário) ----------
+        window.abrirModalCancelamento = function(solicitacaoId) {
             const solicitacao = solicitacoes.find(s => s.id === solicitacaoId);
             if (!solicitacao) return;
             
-            const acao = confirm(`Aprovar solicitação de ${solicitacao.usuarioNome} para ${solicitacao.espacoNome}?`);
+            solicitacaoParaCancelar = solicitacaoId;
             
-            if (acao) {
-                // Aprovar
-                solicitacao.status = 'aprovado';
-                salvarSolicitacoes();
-                
-                // Enviar email para o usuário
-                enviarEmail(solicitacao.usuarioEmail, '✅ Reserva aprovada!', 
-                    `Sua reserva do ${solicitacao.espacoNome} para ${new Date(solicitacao.data).toLocaleDateString('pt-BR')} às ${solicitacao.horaInicio} foi APROVADA.`);
-                
-                alert('Solicitação aprovada com sucesso!');
-            } else {
-                // Reprovar
-                const motivo = prompt('Motivo da reprovação (opcional):');
-                solicitacao.status = 'reprovado';
-                solicitacao.observacao = motivo || 'Não informado';
-                salvarSolicitacoes();
-                
-                // Enviar email para o usuário
-                enviarEmail(solicitacao.usuarioEmail, '❌ Reserva reprovada', 
-                    `Sua reserva do ${solicitacao.espacoNome} foi REPROVADA.\nMotivo: ${motivo || 'Não informado'}`);
-                
-                alert('Solicitação reprovada!');
-            }
+            const modal = document.getElementById('modalCancelamento');
+            const info = document.getElementById('cancelamentoInfo');
             
-            renderizarView('admin-solicitacoes');
+            info.innerHTML = `
+                <strong style="font-size: 1.1rem;">${solicitacao.espacoNome}</strong><br>
+                Data: ${new Date(solicitacao.data).toLocaleDateString('pt-BR')} • ${solicitacao.horaInicio} às ${solicitacao.horaFim}<br>
+                Solicitante: ${solicitacao.usuarioNome}
+            `;
+            
+            modal.classList.add('active');
         };
 
-        window.cancelarSolicitacao = function(solicitacaoId) {
-            if (!confirm('Cancelar esta solicitação?')) return;
+        window.fecharModalCancelamento = function() {
+            document.getElementById('modalCancelamento').classList.remove('active');
+            document.getElementById('motivoCancelamento').value = '';
+            solicitacaoParaCancelar = null;
+        };
+
+        window.confirmarCancelamento = function() {
+            if (!solicitacaoParaCancelar) return;
             
-            const index = solicitacoes.findIndex(s => s.id === solicitacaoId);
+            const motivo = document.getElementById('motivoCancelamento').value.trim() || 'Não informado';
+            const index = solicitacoes.findIndex(s => s.id === solicitacaoParaCancelar);
+            
             if (index !== -1) {
+                const statusAnterior = solicitacoes[index].status;
                 solicitacoes[index].status = 'cancelado';
+                solicitacoes[index].motivoCancelamento = motivo;
+                solicitacoes[index].dataCancelamento = new Date().toISOString();
+                solicitacoes[index].canceladoPor = currentUser.nome;
                 salvarSolicitacoes();
                 
                 const solicitacao = solicitacoes[index];
-                enviarEmail(solicitacao.usuarioEmail, 'Reserva cancelada', 
-                    `Sua reserva do ${solicitacao.espacoNome} foi cancelada.`);
                 
-                alert('Solicitação cancelada!');
-                renderizarView(currentUser?.tipo === 'admin' ? 'admin-solicitacoes' : 'user-solicitacoes');
+                // Email para o usuário
+                enviarEmail(solicitacao.usuarioEmail, '❌ Reserva cancelada', 
+                    `Sua reserva do ${solicitacao.espacoNome} para ${new Date(solicitacao.data).toLocaleDateString('pt-BR')} às ${solicitacao.horaInicio} foi CANCELADA.\nMotivo: ${motivo}\nCancelado por: ${currentUser.nome}`);
+                
+                // Email para admins se não foi admin que cancelou
+                if (currentUser.tipo !== 'admin') {
+                    const admins = usuarios.filter(u => u.tipo === 'admin' && u.status === 'ativo');
+                    admins.forEach(admin => {
+                        enviarEmail(admin.email, '⚠️ Reserva cancelada pelo usuário', 
+                            `O usuário ${solicitacao.usuarioNome} cancelou a reserva do ${solicitacao.espacoNome}.\nMotivo: ${motivo}`);
+                    });
+                }
+                
+                alert('Reserva cancelada com sucesso!');
+                fecharModalCancelamento();
+                
+                if (currentUser.tipo === 'admin') {
+                    renderizarView('admin-solicitacoes');
+                } else {
+                    renderizarView('user-solicitacoes');
+                }
             }
+        };
+
+        // ---------- FUNÇÕES DE ADMIN ----------
+        window.aprovarSolicitacao = function(solicitacaoId) {
+            const solicitacao = solicitacoes.find(s => s.id === solicitacaoId);
+            if (!solicitacao) return;
+            
+            solicitacao.status = 'aprovado';
+            salvarSolicitacoes();
+            
+            enviarEmail(solicitacao.usuarioEmail, '✅ Reserva aprovada!', 
+                `Sua reserva do ${solicitacao.espacoNome} para ${new Date(solicitacao.data).toLocaleDateString('pt-BR')} às ${solicitacao.horaInicio} foi APROVADA.`);
+            
+            alert('Solicitação aprovada!');
+            renderizarView('admin-solicitacoes');
+        };
+
+        window.reprovarSolicitacao = function(solicitacaoId) {
+            const solicitacao = solicitacoes.find(s => s.id === solicitacaoId);
+            if (!solicitacao) return;
+            
+            const motivo = prompt('Motivo da reprovação (opcional):');
+            
+            solicitacao.status = 'reprovado';
+            solicitacao.observacao = motivo || 'Não informado';
+            salvarSolicitacoes();
+            
+            enviarEmail(solicitacao.usuarioEmail, '❌ Reserva reprovada', 
+                `Sua reserva do ${solicitacao.espacoNome} para ${new Date(solicitacao.data).toLocaleDateString('pt-BR')} às ${solicitacao.horaInicio} foi REPROVADA.\nMotivo: ${motivo || 'Não informado'}`);
+            
+            alert('Solicitação reprovada!');
+            renderizarView('admin-solicitacoes');
         };
 
         window.toggleEspacoStatus = function(espacoId) {
@@ -1366,27 +1514,56 @@
             }
         };
 
+        window.toggleUsuarioStatus = function(usuarioId) {
+            const usuario = usuarios.find(u => u.id === usuarioId);
+            if (usuario) {
+                usuario.status = usuario.status === 'ativo' ? 'inativo' : 'ativo';
+                salvarUsuarios();
+                renderizarView('admin-usuarios');
+            }
+        };
+
         window.abrirModalNovoEspaco = function() {
             const nome = prompt('Nome do novo espaço:');
             if (!nome) return;
             
-            const novoTipo = prompt('Tipo (sala/auditorio/treinamento/lazer/especial):', 'sala');
-            if (!novoTipo) return;
+            const tipo = prompt('Tipo (sala/auditorio/treinamento/lazer/especial/esportes):', 'esportes');
+            if (!tipo) return;
             
             const capacidade = parseInt(prompt('Capacidade máxima:', '20'));
             if (!capacidade) return;
             
+            const recursos = prompt('Recursos (separados por vírgula):', 'Grama Sintética, Iluminação, Vestiários').split(',').map(r => r.trim());
+            
+            const iconeMap = {
+                'sala': 'fa-video',
+                'auditorio': 'fa-chalkboard',
+                'treinamento': 'fa-lightbulb',
+                'lazer': 'fa-couch',
+                'especial': 'fa-microphone',
+                'esportes': 'fa-futbol'
+            };
+            
+            const corMap = {
+                'sala': '#2563eb',
+                'auditorio': '#8b5cf6',
+                'treinamento': '#eab308',
+                'lazer': '#10b981',
+                'especial': '#ec4899',
+                'esportes': '#22c55e'
+            };
+            
             const novoEspaco = {
                 id: espacos.length + 1,
                 nome: nome,
-                tipo: novoTipo,
+                tipo: tipo,
                 capacidade: capacidade,
-                recursos: ['Equipamento padrão'],
+                recursos: recursos,
                 descricao: 'Novo espaço cadastrado',
                 imagem: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600',
-                icone: 'fa-door-open',
+                icone: iconeMap[tipo] || 'fa-door-open',
                 status: 'ativo',
-                cor: '#3b82f6'
+                cor: corMap[tipo] || '#3b82f6'
             };
             
             espacos.push(novoEspaco);
