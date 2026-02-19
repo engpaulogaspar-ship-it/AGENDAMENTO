@@ -538,17 +538,36 @@
         </div>
     </div>
 
+    <!-- MODAL DE LINK COMPARTILHÁVEL -->
+    <div id="modalLink" class="modal">
+        <div class="modal-content">
+            <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 12px;">
+                <i class="fas fa-share-alt" style="color: #10b981;"></i> Link Compartilhável
+            </h2>
+            <p style="color: #475569; margin-bottom: 24px;">Copie este link e envie para o administrador ou usuário:</p>
+            
+            <div style="background: #f1f5f9; padding: 16px; border-radius: 16px; word-break: break-all; margin-bottom: 24px; font-size: 0.85rem;" id="linkCompartilhavelTexto">
+                Carregando...
+            </div>
+
+            <div style="display: flex; gap: 16px; justify-content: flex-end;">
+                <button onclick="fecharModalLink()" style="padding: 14px 24px; background: #f1f5f9; color: #1e293b; border: none; border-radius: 40px; font-weight: 600; cursor: pointer;">Fechar</button>
+                <button onclick="copiarLink()" style="padding: 14px 32px; background: #3b82f6; color: white; border: none; border-radius: 40px; font-weight: 600; cursor: pointer;">
+                    <i class="fas fa-copy"></i> Copiar Link
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ============================================================
-        // SPACEFLOW PRO - SISTEMA DE RESERVAS CORPORATIVO
+        // IAT PRO - SISTEMA DE RESERVAS CORPORATIVO
         // ============================================================
-        // ✅ CORREÇÕES:
-        // 1. Usuário NÃO precisa estar na mesma rede (100% independente)
-        // 2. Usuário e Admin podem cancelar reservas a qualquer momento
-        // 3. Adicionado espaço: QUADRA SOCIETY (Futebol Society)
+        // ✅ AGORA FUNCIONA ENTRE DIFERENTES REDES/COMPUTADORES!
+        // ✅ USANDO LINK COMPARTILHÁVEL COM TODOS OS DADOS
         // ============================================================
 
-        // ---------- BANCO DE DADOS - 6 ESPAÇOS (5 + QUADRA) ----------
+        // ---------- BANCO DE DADOS - 6 ESPAÇOS ----------
         const ESPACOS_PREMIUM = [
             {
                 id: 1,
@@ -626,16 +645,18 @@
 
         // ---------- ESTADO GLOBAL ----------
         let usuarios = JSON.parse(localStorage.getItem('spaceflow_usuarios')) || [
-            { id: 1, nome: "Admin Master", email: "engpaulogaspar@gmail.com", senha: "admin123", tipo: "admin", status: "ativo", avatar: "AM" },
-            { id: 2, nome: "Usuário Teste", email: "paulogasparginga2018@gmail.com", senha: "123456", tipo: "usuario", status: "ativo", avatar: "UT" }
+            { id: 1, nome: "Admin Master", email: "admin@spaceflow.com", senha: "admin123", tipo: "admin", status: "ativo", avatar: "AM" },
+            { id: 2, nome: "Usuário Teste", email: "user@teste.com", senha: "123456", tipo: "usuario", status: "ativo", avatar: "UT" }
         ];
 
         let espacos = JSON.parse(localStorage.getItem('spaceflow_espacos')) || ESPACOS_PREMIUM;
         let solicitacoes = JSON.parse(localStorage.getItem('spaceflow_solicitacoes')) || [];
         let currentUser = JSON.parse(localStorage.getItem('spaceflow_user')) || null;
 
-        // Variável para controle de cancelamento
+        // Variáveis de controle
+        let espacoSelecionadoId = null;
         let solicitacaoParaCancelar = null;
+        let linkAtual = '';
 
         // ---------- FUNÇÕES DE PERSISTÊNCIA ----------
         function salvarUsuarios() { localStorage.setItem('spaceflow_usuarios', JSON.stringify(usuarios)); }
@@ -643,7 +664,107 @@
         function salvarSolicitacoes() { localStorage.setItem('spaceflow_solicitacoes', JSON.stringify(solicitacoes)); }
         function salvarSessao() { localStorage.setItem('spaceflow_user', JSON.stringify(currentUser)); }
 
-        // ---------- SIMULAÇÃO DE EMAIL (INDEPENDENTE DE REDE) ----------
+        // ---------- FUNÇÃO PARA GERAR LINK COMPARTILHÁVEL ----------
+        function gerarLinkCompartilhavel() {
+            const dadosCompletos = {
+                usuarios: usuarios,
+                espacos: espacos,
+                solicitacoes: solicitacoes,
+                versao: "1.0"
+            };
+            
+            const dadosString = JSON.stringify(dadosCompletos);
+            const dadosBase64 = btoa(encodeURIComponent(dadosString));
+            const link = `${window.location.origin}${window.location.pathname}?data=${dadosBase64}`;
+            
+            linkAtual = link;
+            return link;
+        }
+
+        // ---------- FUNÇÃO PARA CARREGAR DADOS DO LINK ----------
+        function carregarDadosDoLink() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const dadosBase64 = urlParams.get('data');
+            
+            if (dadosBase64) {
+                try {
+                    const dadosString = decodeURIComponent(atob(dadosBase64));
+                    const dados = JSON.parse(dadosString);
+                    
+                    if (dados.usuarios) usuarios = dados.usuarios;
+                    if (dados.espacos) espacos = dados.espacos;
+                    if (dados.solicitacoes) solicitacoes = dados.solicitacoes;
+                    
+                    // Salvar no localStorage local
+                    salvarUsuarios();
+                    salvarEspacos();
+                    salvarSolicitacoes();
+                    
+                    // Mostrar notificação de sucesso
+                    mostrarNotificacao('📦 Dados carregados do link compartilhado!', 'success');
+                    
+                    // Limpar URL (opcional)
+                    // window.history.replaceState({}, document.title, window.location.pathname);
+                    
+                    return true;
+                } catch (e) {
+                    console.error('Erro ao carregar dados:', e);
+                    mostrarNotificacao('❌ Erro ao carregar dados do link', 'error');
+                }
+            }
+            return false;
+        }
+
+        // ---------- FUNÇÃO PARA MOSTRAR NOTIFICAÇÃO ----------
+        function mostrarNotificacao(mensagem, tipo = 'info') {
+            const notificacao = document.createElement('div');
+            notificacao.className = 'notificacao';
+            
+            const cores = {
+                success: '#10b981',
+                error: '#ef4444',
+                info: '#3b82f6',
+                warning: '#f59e0b'
+            };
+            
+            notificacao.style.borderLeftColor = cores[tipo] || cores.info;
+            
+            notificacao.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="background: #eef2ff; padding: 12px; border-radius: 14px;">
+                        <i class="fas fa-${tipo === 'success' ? 'check-circle' : tipo === 'error' ? 'exclamation-circle' : 'info-circle'}" style="color: ${cores[tipo] || cores.info}; font-size: 1.4rem;"></i>
+                    </div>
+                    <div>
+                        <p style="color: #0b1c33; font-weight: 500;">${mensagem}</p>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notificacao);
+            setTimeout(() => notificacao.remove(), 5000);
+        }
+
+        // ---------- FUNÇÃO PARA ABRIR MODAL DE LINK ----------
+        function abrirModalLink() {
+            const link = gerarLinkCompartilhavel();
+            document.getElementById('linkCompartilhavelTexto').textContent = link;
+            document.getElementById('modalLink').classList.add('active');
+        }
+
+        window.fecharModalLink = function() {
+            document.getElementById('modalLink').classList.remove('active');
+        };
+
+        window.copiarLink = function() {
+            navigator.clipboard.writeText(linkAtual).then(() => {
+                mostrarNotificacao('✅ Link copiado para a área de transferência!', 'success');
+                fecharModalLink();
+            }).catch(() => {
+                mostrarNotificacao('❌ Erro ao copiar link', 'error');
+            });
+        };
+
+        // ---------- SIMULAÇÃO DE EMAIL ----------
         function enviarEmail(destinatario, assunto, mensagem) {
             console.log(`📧 EMAIL ENVIADO para ${destinatario} | Assunto: ${assunto}`);
             
@@ -684,7 +805,7 @@
                                 </div>
                                 <h1 style="font-size: 2.2rem; font-weight: 800; color: #0b1c33;">Instituto Água e Terra - IAT</h1>
                                 <p style="color: #64748b; margin-top: 12px;">Sistema corporativo de reservas</p>
-                                <p style="color: #3b82f6; margin-top: 8px; font-weight: 500;"><i class="fas fa-globe"></i> Acessível de qualquer rede</p>
+                                <p style="color: #3b82f6; margin-top: 8px; font-weight: 500;"><i class="fas fa-share-alt"></i> COMPARTILHÁVEL entre redes!</p>
                             </div>
                             
                             <div style="display: flex; gap: 16px; margin-bottom: 32px; background: #f1f5f9; padding: 6px; border-radius: 60px;">
@@ -731,7 +852,7 @@
                                     </select>
                                 </div>
                                 <div id="adminCodeGroup" style="display: none; margin-bottom: 24px;">
-                                    <label style="font-weight: 600; display: block; margin-bottom: 8px;"></label>
+                                    <label style="font-weight: 600; display: block; margin-bottom: 8px;">Código Admin</label>
                                     <input type="password" id="adminCode" placeholder="ADMIN123" style="width: 100%; padding: 16px; border-radius: 20px; border: 1.5px solid #e2e8f0; font-family: 'Inter';">
                                 </div>
                                 <button onclick="cadastrarUsuario()" style="width: 100%; padding: 18px; background: #0b1c33; color: white; border: none; border-radius: 40px; font-weight: 700; font-size: 1.1rem; cursor: pointer;">
@@ -803,6 +924,9 @@
                         <div class="nav-item" data-view="admin-usuarios">
                             <i class="fas fa-users-cog"></i> Usuários
                         </div>
+                        <div class="nav-item" onclick="abrirModalLink()" style="background: #3b82f6; color: white; margin-top: 20px;">
+                            <i class="fas fa-share-alt"></i> COMPARTILHAR DADOS
+                        </div>
                     ` : `
                         <div class="nav-item active" data-view="user-home">
                             <i class="fas fa-home"></i> Início
@@ -812,6 +936,9 @@
                         </div>
                         <div class="nav-item" data-view="user-solicitacoes">
                             <i class="fas fa-clock"></i> Minhas Solicitações
+                        </div>
+                        <div class="nav-item" onclick="abrirModalLink()" style="background: #3b82f6; color: white; margin-top: 20px;">
+                            <i class="fas fa-share-alt"></i> COMPARTILHAR DADOS
                         </div>
                     `}
                 </div>
@@ -832,7 +959,7 @@
             `;
 
             setTimeout(() => {
-                document.querySelectorAll('.nav-item').forEach(item => {
+                document.querySelectorAll('.nav-item[data-view]').forEach(item => {
                     item.addEventListener('click', function() {
                         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                         this.classList.add('active');
@@ -1275,8 +1402,6 @@
         };
 
         // ---------- FUNÇÕES DE RESERVA ----------
-        let espacoSelecionadoId = null;
-
         window.abrirModalReserva = function(espacoId) {
             if (!currentUser) {
                 alert('Faça login primeiro!');
@@ -1397,18 +1522,25 @@
             solicitacoes.push(novaSolicitacao);
             salvarSolicitacoes();
             
+            // GERAR LINK COMPARTILHÁVEL AUTOMATICAMENTE
+            const link = gerarLinkCompartilhavel();
+            
+            // Mostrar modal com link
+            document.getElementById('linkCompartilhavelTexto').textContent = link;
+            document.getElementById('modalLink').classList.add('active');
+            
+            // Notificar admins
             const admins = usuarios.filter(u => u.tipo === 'admin' && u.status === 'ativo');
             admins.forEach(admin => {
                 enviarEmail(admin.email, '📌 Nova solicitação de reserva', 
-                    `Usuário ${currentUser.nome} solicitou ${espaco.nome} para ${new Date(data).toLocaleDateString('pt-BR')} às ${horaInicio}.`);
+                    `Usuário ${currentUser.nome} solicitou ${espaco.nome} para ${new Date(data).toLocaleDateString('pt-BR')} às ${horaInicio}.\n\nCOMPARTILHE O LINK: ${link}`);
             });
             
-            alert('✅ Solicitação enviada com sucesso! Aguarde aprovação.');
             fecharModalReserva();
             renderizarView('user-solicitacoes');
         };
 
-        // ---------- FUNÇÕES DE CANCELAMENTO (Admin e Usuário) ----------
+        // ---------- FUNÇÕES DE CANCELAMENTO ----------
         window.abrirModalCancelamento = function(solicitacaoId) {
             const solicitacao = solicitacoes.find(s => s.id === solicitacaoId);
             if (!solicitacao) return;
@@ -1440,7 +1572,6 @@
             const index = solicitacoes.findIndex(s => s.id === solicitacaoParaCancelar);
             
             if (index !== -1) {
-                const statusAnterior = solicitacoes[index].status;
                 solicitacoes[index].status = 'cancelado';
                 solicitacoes[index].motivoCancelamento = motivo;
                 solicitacoes[index].dataCancelamento = new Date().toISOString();
@@ -1449,18 +1580,12 @@
                 
                 const solicitacao = solicitacoes[index];
                 
+                // Gerar link atualizado
+                const link = gerarLinkCompartilhavel();
+                
                 // Email para o usuário
                 enviarEmail(solicitacao.usuarioEmail, '❌ Reserva cancelada', 
-                    `Sua reserva do ${solicitacao.espacoNome} para ${new Date(solicitacao.data).toLocaleDateString('pt-BR')} às ${solicitacao.horaInicio} foi CANCELADA.\nMotivo: ${motivo}\nCancelado por: ${currentUser.nome}`);
-                
-                // Email para admins se não foi admin que cancelou
-                if (currentUser.tipo !== 'admin') {
-                    const admins = usuarios.filter(u => u.tipo === 'admin' && u.status === 'ativo');
-                    admins.forEach(admin => {
-                        enviarEmail(admin.email, '⚠️ Reserva cancelada pelo usuário', 
-                            `O usuário ${solicitacao.usuarioNome} cancelou a reserva do ${solicitacao.espacoNome}.\nMotivo: ${motivo}`);
-                    });
-                }
+                    `Sua reserva do ${solicitacao.espacoNome} para ${new Date(solicitacao.data).toLocaleDateString('pt-BR')} às ${solicitacao.horaInicio} foi CANCELADA.\nMotivo: ${motivo}\nCancelado por: ${currentUser.nome}\n\nLINK ATUALIZADO: ${link}`);
                 
                 alert('Reserva cancelada com sucesso!');
                 fecharModalCancelamento();
@@ -1481,8 +1606,11 @@
             solicitacao.status = 'aprovado';
             salvarSolicitacoes();
             
+            // Gerar link atualizado
+            const link = gerarLinkCompartilhavel();
+            
             enviarEmail(solicitacao.usuarioEmail, '✅ Reserva aprovada!', 
-                `Sua reserva do ${solicitacao.espacoNome} para ${new Date(solicitacao.data).toLocaleDateString('pt-BR')} às ${solicitacao.horaInicio} foi APROVADA.`);
+                `Sua reserva do ${solicitacao.espacoNome} para ${new Date(solicitacao.data).toLocaleDateString('pt-BR')} às ${solicitacao.horaInicio} foi APROVADA.\n\nLINK ATUALIZADO: ${link}`);
             
             alert('Solicitação aprovada!');
             renderizarView('admin-solicitacoes');
@@ -1498,8 +1626,11 @@
             solicitacao.observacao = motivo || 'Não informado';
             salvarSolicitacoes();
             
+            // Gerar link atualizado
+            const link = gerarLinkCompartilhavel();
+            
             enviarEmail(solicitacao.usuarioEmail, '❌ Reserva reprovada', 
-                `Sua reserva do ${solicitacao.espacoNome} para ${new Date(solicitacao.data).toLocaleDateString('pt-BR')} às ${solicitacao.horaInicio} foi REPROVADA.\nMotivo: ${motivo || 'Não informado'}`);
+                `Sua reserva do ${solicitacao.espacoNome} para ${new Date(solicitacao.data).toLocaleDateString('pt-BR')} às ${solicitacao.horaInicio} foi REPROVADA.\nMotivo: ${motivo || 'Não informado'}\n\nLINK ATUALIZADO: ${link}`);
             
             alert('Solicitação reprovada!');
             renderizarView('admin-solicitacoes');
@@ -1571,11 +1702,18 @@
             renderizarView('admin-espacos');
         };
 
-        // Inicializar
-        salvarUsuarios();
-        salvarEspacos();
-        salvarSolicitacoes();
-        renderizarInterface();
+        // ---------- INICIALIZAÇÃO ----------
+        window.addEventListener('load', function() {
+            // Tentar carregar dados do link primeiro
+            if (carregarDadosDoLink()) {
+                mostrarNotificacao('📦 Dados sincronizados via link!', 'success');
+            }
+            
+            salvarUsuarios();
+            salvarEspacos();
+            salvarSolicitacoes();
+            renderizarInterface();
+        });
     </script>
 </body>
 </html>
